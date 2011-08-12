@@ -67,7 +67,7 @@ py_modules = ['pylab']
 
 ext_modules = []
 
-for line in open('lib/matplotlib/__init__.py').readlines():
+for line in open('matplotlib/__init__.py').readlines():
     if (line.startswith('__version__')):
         exec(line.strip())
 
@@ -233,13 +233,13 @@ print_line()
 # Write the default matplotlibrc file
 if options['backend']: rc['backend'] = options['backend']
 template = open('matplotlibrc.template').read()
-open('lib/matplotlib/mpl-data/matplotlibrc', 'w').write(template%rc)
+open('matplotlib/mpl-data/matplotlibrc', 'w').write(template%rc)
 
 # Write the default matplotlib.conf file
-template = open('lib/matplotlib/mpl-data/matplotlib.conf.template').read()
+template = open('matplotlib/mpl-data/matplotlib.conf.template').read()
 template = template.replace("datapath = ", "#datapath = ")
 template = template.replace("    use = 'Agg'", "    use = '%s'"%rc['backend'])
-open('lib/matplotlib/mpl-data/matplotlib.conf', 'w').write(template)
+open('matplotlib/mpl-data/matplotlib.conf', 'w').write(template)
 
 try: additional_params # has setupegg.py provided
 except NameError: additional_params = {}
@@ -267,7 +267,7 @@ distrib = setup(name="matplotlib",
       platforms='any',
       py_modules = py_modules,
       ext_modules = ext_modules,
-      package_dir = {'': 'lib'},
+      #package_dir = {'': 'lib'},
       package_data = package_data,
       **additional_params
       )

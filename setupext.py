@@ -1258,7 +1258,7 @@ def build_delaunay(ext_modules, packages):
 
     sourcefiles=["_delaunay.cpp", "VoronoiDiagramGenerator.cpp",
                  "delaunay_utils.cpp", "natneighbors.cpp"]
-    sourcefiles = [os.path.join('lib/matplotlib/delaunay',s) for s in sourcefiles]
+    sourcefiles = [os.path.join('matplotlib/delaunay',s) for s in sourcefiles]
     delaunay = Extension('matplotlib._delaunay',sourcefiles,
                          include_dirs=numpy_inc_dirs,
                          define_macros=defines
@@ -1328,7 +1328,7 @@ def build_tri(ext_modules, packages):
     global BUILT_TRI
     if BUILT_TRI: return # only build it if you you haven't already
 
-    deps = ['lib/matplotlib/tri/_tri.cpp', 'src/mplutils.cpp']
+    deps = ['matplotlib/tri/_tri.cpp', 'src/mplutils.cpp']
     deps.extend(glob.glob('CXX/*.cxx'))
     deps.extend(glob.glob('CXX/*.c'))
 
