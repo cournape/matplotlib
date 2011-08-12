@@ -1,0 +1,149 @@
+Name: matplotlib
+Version: 1.1.0
+Summary: Python plotting package
+Url: http://matplotlib.sourceforge.net
+Description:     
+          matplotlib strives to produce publication quality 2D graphics
+          for interactive graphing, scientific publishing, user interface
+          development and web application servers targeting multiple user
+          interfaces and hardcopy output formats.  There is a 'pylab' mode
+          which emulates matlab graphics
+Author: John D. Hunter
+AuthorEmail: jdh2358@gmail.com
+Maintainer: John D. Hunter
+MaintainerEmail: jdh2358@gmail.com
+Platforms: any
+
+DataFiles: gendata_matplotlib
+    SourceDir: .
+    TargetDir: $sitedir/matplotlib
+    Files:
+        matplotlib/mpl-data/fonts/afm/*.afm,
+        matplotlib/mpl-data/fonts/pdfcorefonts/*.afm,
+        matplotlib/mpl-data/fonts/pdfcorefonts/*.txt,
+        matplotlib/mpl-data/fonts/ttf/*.ttf,
+        matplotlib/mpl-data/fonts/ttf/LICENSE_STIX,
+        matplotlib/mpl-data/fonts/ttf/COPYRIGHT.TXT,
+        matplotlib/mpl-data/fonts/ttf/README.TXT,
+        matplotlib/mpl-data/fonts/ttf/RELEASENOTES.TXT,
+        matplotlib/mpl-data/images/*.xpm,
+        matplotlib/mpl-data/images/*.svg,
+        matplotlib/mpl-data/images/*.png,
+        matplotlib/mpl-data/images/*.ppm,
+        matplotlib/mpl-data/matplotlibrc,
+        matplotlib/mpl-data/matplotlib.conf,
+        matplotlib/mpl-data/*.glade,
+        matplotlib/backends/Matplotlib.nib/*
+
+HookFile: bscript
+
+Library:
+    Modules:
+        pylab
+    Packages:
+        matplotlib,
+        matplotlib.backends,
+        matplotlib.backends.qt4_editor,
+        matplotlib.delaunay,
+        matplotlib.projections,
+        matplotlib.sphinxext,
+        matplotlib.testing,
+        matplotlib.testing.jpl_units,
+        matplotlib.tests,
+        matplotlib.tri,
+        mpl_toolkits,
+        mpl_toolkits.axes_grid,
+        mpl_toolkits.axes_grid1,
+        mpl_toolkits.axisartist,
+        mpl_toolkits.mplot3d
+    Extension: matplotlib._cntr
+        Sources:
+            src/cntr.c
+    Extension: matplotlib._image
+        Sources:
+            src/_image.cpp,
+            src/mplutils.cpp,
+            agg24/src/agg_trans_affine.cpp,
+            agg24/src/agg_image_filters.cpp,
+            agg24/src/agg_bezier_arc.cpp,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            CXX/cxxextensions.c
+    Extension: matplotlib._tri
+        Sources:
+            matplotlib/tri/_tri.cpp,
+            src/mplutils.cpp,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            CXX/cxxextensions.c
+    Extension: matplotlib.backends._backend_agg
+        Sources:
+            agg24/src/agg_trans_affine.cpp,
+            agg24/src/agg_bezier_arc.cpp,
+            agg24/src/agg_curves.cpp,
+            agg24/src/agg_vcgen_dash.cpp,
+            agg24/src/agg_vcgen_stroke.cpp,
+            agg24/src/agg_image_filters.cpp,
+            src/mplutils.cpp,
+            src/agg_py_transforms.cpp,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            CXX/cxxextensions.c,
+            src/_backend_agg.cpp
+    Extension: matplotlib._delaunay
+        Sources:
+            matplotlib/delaunay/_delaunay.cpp,
+            matplotlib/delaunay/VoronoiDiagramGenerator.cpp,
+            matplotlib/delaunay/delaunay_utils.cpp,
+            matplotlib/delaunay/natneighbors.cpp
+    Extension: matplotlib.ft2font
+        Sources:
+            src/ft2font.cpp,
+            src/mplutils.cpp,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            CXX/cxxextensions.c
+    Extension: matplotlib.ttconv
+        Sources:
+            src/_ttconv.cpp,
+            ttconv/pprdrv_tt.cpp,
+            ttconv/pprdrv_tt2.cpp,
+            ttconv/ttutil.cpp
+    Extension: matplotlib._path
+        Sources:
+            agg24/src/agg_vcgen_contour.cpp,
+            agg24/src/agg_curves.cpp,
+            agg24/src/agg_bezier_arc.cpp,
+            agg24/src/agg_trans_affine.cpp,
+            agg24/src/agg_vcgen_stroke.cpp,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            CXX/cxxextensions.c,
+            src/agg_py_transforms.cpp,
+            src/path_cleanup.cpp,
+            src/_path.cpp
+    Extension: matplotlib._png
+        Sources:
+            src/_png.cpp,
+            src/mplutils.cpp,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            CXX/cxxextensions.c
+    Extension: matplotlib.backends._macosx
+        Sources:
+            src/_macosx.m,
+            CXX/cxx_extensions.cxx,
+            CXX/cxxextensions.c,
+            CXX/cxxsupport.cxx,
+            CXX/IndirectPythonInterface.cxx,
+            src/agg_py_transforms.cpp,
+            src/path_cleanup.cpp
+    Extension: matplotlib.nxutils
+        Sources:
+            src/nxutils.c

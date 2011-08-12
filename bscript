@@ -1,0 +1,142 @@
+import os
+import sys
+
+from numpy.distutils.misc_util \
+    import \
+        get_numpy_include_dirs
+
+from bento.commands import hooks
+
+from bento.commands.extras.waf \
+    import \
+        ConfigureWafContext, BuildWafContext, register_options
+
+import waflib
+
+def remove_flag(name, flag):
+    while True:
+        if name in flag:
+            i = flag.index(name)
+            flag.pop(i)
+        else:
+            break
+
+def remove_flag_postvalue(name, flag):
+    while True:
+        if name in flag:
+            i = flag.index(name)
+            flag.pop(i)
+            flag.pop(i)
+        else:
+            break
+
+def remove_flag_prevalue(name, flag):
+    while True:
+        if name in flag:
+            i = flag.index(name)
+            flag.pop(i-1)
+            flag.pop(i-1)
+        else:
+            break
+
+@waflib.TaskGen.extension('.m')
+def m_hook(self, node):
+    """Alias .m files to be compiled the same as .c files, gcc will do the right thing."""
+    return self.create_compiled_task('c', node)
+
+@hooks.startup
+def startup(context):
+    context.register_context("configure", ConfigureWafContext)
+    context.register_context("build", BuildWafContext)
+
+@hooks.options
+def options(context):
+    register_options(context)
+
+@hooks.pre_configure
+def pre_configure(context):
+    opts = context.waf_options_context
+    opts.load("compiler_cxx")
+    waflib.Options.options.check_cxx_compiler = "g++"
+
+    conf = context.waf_context
+    conf.load("compiler_c")
+    conf.load("compiler_cxx")
+    conf.load("python")
+
+    conf.check_python_version((2, 4, 0))
+    conf.check_python_headers()
+
+    if sys.platform == "darwin":
+        # FIXME: fix upstream waf tool to work on mac os X
+        conf.env.CC = ["/usr/bin/gcc-4.0"]
+        conf.env.LINK_CC = ["/usr/bin/gcc-4.0"]
+        # FIXME: fix upstream waf tool to avoid linking against libpython2.6.so
+        # (cause crashes when importing the extension)
+        name = "python%s" % ".".join([str(i) for i in sys.version_info[:2]])
+        remove_flag(name, conf.env.LIB_PYEXT)
+        remove_flag("-dynamiclib", conf.env.LINKFLAGS_cshlib)
+        remove_flag_postvalue("-compatibility_version", conf.env.CFLAGS_cshlib)
+        remove_flag_postvalue("-current_version", conf.env.CFLAGS_cshlib)
+        remove_flag_prevalue("ppc", conf.env.CFLAGS_PYEXT)
+        remove_flag_prevalue("ppc", conf.env.LINKFLAGS_PYEXT)
+        conf.env.LINKFLAGS_cshlib.extend(["-undefined", "dynamic_lookup", "-bundle"])
+        conf.env["MACOSX_DEPLOYMENT_TARGET"] = "10.4"
+
+    conf.env.CFLAGS_PYEXT.append("-Wfatal-errors")
+    conf.env.CFLAGS_PYEXT.append("-O3")
+    conf.env.INCLUDES = []
+    conf.env.INCLUDES.extend(get_numpy_include_dirs())
+
+    conf.check_cfg(package='freetype2', uselib_store='FREETYPE2', args="--cflags --libs")
+    conf.check_cfg(package='libpng', uselib_store='PNG', args="--cflags --libs", mandatory=False)
+
+@hooks.pre_build
+def pre_build(context):
+    bld = context.waf_context
+
+    def builder_compiled_base(extension):
+        includes = ["agg24/include", "."]
+        bld(features="c cxx cshlib pyext bento",
+            name=extension.name,
+            includes=includes,
+            source=extension.sources)
+    context.register_builder("matplotlib._image", builder_compiled_base)
+    context.register_builder("matplotlib._tri", builder_compiled_base)
+    context.register_builder("matplotlib._path", builder_compiled_base)
+    context.register_builder("matplotlib.backends._macosx", builder_compiled_base)
+
+    def builder_compiled_base2(extension):
+        includes = ["agg24/include", "."]
+        bld(features="c cxx cshlib pyext bento",
+            name=extension.name,
+            includes=includes,
+            source=extension.sources,
+            use="FREETYPE2")
+    context.register_builder("matplotlib.backends._backend_agg", builder_compiled_base2)
+
+    def builder_ft2font(extension):
+        includes = ["."]
+        bld(features="c cxx cshlib pyext bento",
+            name=extension.name,
+            includes=includes,
+            source=extension.sources,
+            use="FREETYPE2")
+    context.register_builder("matplotlib.ft2font", builder_ft2font)
+
+    def builder_ttconv(extension):
+        includes = ["ttconv", "."]
+        bld(features="c cxx cshlib pyext bento",
+            name=extension.name,
+            includes=includes,
+            source=extension.sources)
+    context.register_builder("matplotlib.ttconv", builder_ttconv)
+
+    def builder_png(extension):
+        includes = ["."]
+        bld(features="c cxx cshlib pyext bento",
+            name=extension.name,
+            includes=includes,
+            source=extension.sources,
+            use="PNG")
+    context.register_builder("matplotlib._png", builder_png)
